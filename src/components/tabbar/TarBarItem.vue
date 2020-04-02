@@ -18,22 +18,28 @@
 export default {
     name: 'TarBarItem',
     props: {
-        link: {
+        path: String,
+        activeColor: {
             type: String,
-            required:true
+            default: "red"
+        }
+    },
+    data: function() {
+        return {
+            isActive: true
         }
     },
     computed: {
         isActive() {
-            return this.$route.path.indexof(this.link) !== -1
+            return this.$route.path.indexof(this.path) !== -1
         },
         activeStyle() {
-            return this.isActive ? {'color': 'red'} : {}
+            return this.isActive ? {color: this.activeColor} : {}
         }
     },
     methods: {
         itemClick() {
-            this.$router.replace(this.link)
+            this.$router.replace(this.path)
         }
     }
    
