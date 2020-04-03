@@ -1,6 +1,6 @@
 <template>
  <div class="goods">
-    <img :src="goodsitem.show.img" alt="">
+    <img :src="goodsitem.show.img" alt="" @load="imgload">
     <div class="goodsinfo">
         <p>{{goodsitem.title}}</p>
         <span>{{goodsitem.price}}</span>
@@ -20,6 +20,12 @@ export default {
             default() {
                 return{}
             }
+        }
+    },
+    methods: {
+        imgload() {
+            //利用事件总线，与Home.vue通信，$emit发送
+            this.$bus.$emit('itemload')
         }
     }
 }

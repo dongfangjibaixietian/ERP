@@ -69,6 +69,11 @@
         this.getHomeGoods('pop')
         this.getHomeGoods('new')
         this.getHomeGoods('sell')
+
+        this.$bus.$on('itemload',() => {
+            //利用事件总线，$on接受GoodList的$emit
+            this.$refs.scroll.refresh()
+        })
     },
     methods: {
         getHomeMultidata() {
@@ -81,7 +86,8 @@
             const page = this.goods[type].page + 1
             getHomeGoods(type, page).then(res => {
                 this.goods[type].list.push(...res.data.data.list);
-                this.goods[type].page +=1
+                this.goods[type].page +=1;
+                this.$refs.scroll.finishPullUp()
                
             })
         },
@@ -108,7 +114,7 @@
         contentscroll(position){
            this.isshowback = (-position.y) > 1000
         },
-        //记载更多，可以直接调用加载数据函数
+        //加载更多，可以直接调用加载数据函数
         loadmore() {
             this.getHomeGoods(this.currenttype)
         }
