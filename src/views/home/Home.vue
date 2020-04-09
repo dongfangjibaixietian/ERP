@@ -1,8 +1,6 @@
 <template>
     <div id="home">
-        
     <nav-bar><div slot="center">ERP物料</div></nav-bar>
-
     <scroll 
     class="scroll-content" 
     ref="scroll" 
@@ -32,6 +30,9 @@
     import GoodsListItem from '../../components/goods/GoodsListItem.vue'
     import Scroll from '../../components/scroll/Scroll.vue'
     import BackTop from '../../components/backtop/BackTop.vue'
+
+    //引入防抖函数
+    import {debounce} from '../../components/utils'
 
 
 
@@ -71,10 +72,11 @@
         this.getHomeGoods('sell')
     },
     mounted() {
-        const refresh = this.debounce(this.$refs.scroll.refresh,2000)
+        //防止reflesh函数刷新过于频繁，添加防抖
+        const refresh = debounce(this.$refs.scroll.refresh,200)
 
         this.$bus.$on('itemload',() => {
-            //利用事件总线，$on接受GoodList的$emit
+            //利用事件总线，$on接受GoodListItem的$emit
             refresh()
         })
     },
@@ -90,6 +92,8 @@
             getHomeGoods(type, page).then(res => {
                 this.goods[type].list.push(...res.data.data.list);
                 this.goods[type].page +=1;
+
+                //只有结束当前加载，才能再一次加载更多
                 this.$refs.scroll.finishPullUp()
                
             })
@@ -121,15 +125,8 @@
         loadmore() {
             this.getHomeGoods(this.currenttype)
         },
-        debounce(func, delay) {
-            let timer = null;
-            return function () {
-                if(timer) clearTimeout(timer)
-                timer = setTimeout(() => {
-                    func
-                },delay)
-            }
-        }
+
+        
     }
 }
 </script>
@@ -148,5 +145,10 @@
         bottom: 49px;
         left: 0;
         right: 0;
+    }
+
+    .tab-contral0 {
+        position: relative;
+        z-index: 100;
     }
 </style>

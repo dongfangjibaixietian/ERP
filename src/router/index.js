@@ -7,6 +7,8 @@ const Home = () => import ('../views/home/Home.vue')
 const Category = () => import ('../views/category/Category.vue')
 const Cart = () => import ('../views/cart/Cart.vue')
 const Me = () => import ('../views/me/Me.vue')
+const Detail = () => import ('../views/detail/Detail.vue')
+
 
 const routes = [
 {
@@ -28,6 +30,11 @@ component: Cart
 {
 path: '/me',
 component: Me
+},
+{
+    //动态路由传递参数
+    path: '/detail/:iid',
+    component: Detail
 }
 ]
 

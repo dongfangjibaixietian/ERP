@@ -1,6 +1,6 @@
 <template>
  <div class="goods">
-    <img :src="goodsitem.show.img" alt="" @load="imgload">
+    <img :src="goodsitem.show.img" alt="" @load="imgload" @click="imgclick">
     <div class="goodsinfo">
         <p>{{goodsitem.title}}</p>
         <span>{{goodsitem.price}}</span>
@@ -26,6 +26,9 @@ export default {
         imgload() {
             //利用事件总线，与Home.vue通信，$emit发送
             this.$bus.$emit('itemload')
+        },
+        imgclick() {
+            this.$router.push('/detail/' + this.goodsitem.iid) //路由跳转，push进入需要进入的路由
         }
     }
 }
