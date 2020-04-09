@@ -69,10 +69,13 @@
         this.getHomeGoods('pop')
         this.getHomeGoods('new')
         this.getHomeGoods('sell')
+    },
+    mounted() {
+        const refresh = this.debounce(this.$refs.scroll.refresh,2000)
 
         this.$bus.$on('itemload',() => {
             //利用事件总线，$on接受GoodList的$emit
-            this.$refs.scroll.refresh()
+            refresh()
         })
     },
     methods: {
@@ -117,6 +120,15 @@
         //加载更多，可以直接调用加载数据函数
         loadmore() {
             this.getHomeGoods(this.currenttype)
+        },
+        debounce(func, delay) {
+            let timer = null;
+            return function () {
+                if(timer) clearTimeout(timer)
+                timer = setTimeout(() => {
+                    func
+                },delay)
+            }
         }
     }
 }
