@@ -146,9 +146,4 @@
         left: 0;
         right: 0;
     }
-
-    .tab-contral0 {
-        position: relative;
-        z-index: 100;
-    }
 </style>
