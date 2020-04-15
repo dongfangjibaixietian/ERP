@@ -24,7 +24,7 @@
        },
        computed: {
            showImage() {
-               return this.goodsitem.image || this.goodsitem.show.image
+               return  this.goodsitem.image || this.goodsitem.show.img
            }
        },
        methods: {

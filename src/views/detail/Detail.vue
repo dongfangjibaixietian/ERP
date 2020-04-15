@@ -1,15 +1,15 @@
 <template>
     <div class="detail">
-    <detail-nav-bar class="detail-nav"></detail-nav-bar>
+    <detail-nav-bar class="detail-nav" @itemclick='itemclick' ref="nav"></detail-nav-bar>
 
-    <scroll class="con" ref="scroll">
+    <scroll class="con" ref="scroll" @scroll="cscroll" :probe-type="3">
     <detail-swiper :top-images="topImages"></detail-swiper>
     <detail-base-info :goods="goods"></detail-base-info>
     <detail-shop-info :shop="shop"></detail-shop-info>
     <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
-    <detail-param-info :param-info="paramInfo"></detail-param-info>
-    <detail-comment-info :comment-info="commentInfo"></detail-comment-info>
-    <goods-list :goods="recommends"></goods-list>
+    <detail-param-info ref="params" :param-info="paramInfo"></detail-param-info>
+    <detail-comment-info ref="comment" :comment-info="commentInfo"></detail-comment-info>
+    <goods-list ref="list" :goods="recommends"></goods-list>
     </scroll>
 
     </div>
@@ -31,6 +31,7 @@
     
 
     import {getDetail, Goods, Shop, GoodsParam, getRecommend} from '../../network/detail'
+    import {debounce} from '../../components/utils'
     //所有以类构造数据的方式都需要引入，引入的只是方法对象结构函数，引入函数不需要在components中注册。上面再引入数据的具体展示包
     
     
@@ -57,7 +58,11 @@
                 detailInfo: {},
                 paramInfo: {},
                 commentInfo: {},
-                recommends: []
+                recommends: [],
+                themeTopYs: [],
+                getthemeTopYs: null,
+                currentIndex: 0
+    
             }
         },
         created() {
@@ -81,17 +86,43 @@
                 if (data.rate.cRate !== 0) {
                     this.commentInfo = data.rate.list[0]
                 }
+
+
+
+                this.getthemeTopYs = debounce(() => {
+                    this.themeTopYs.push(0);
+                    //$el表示使用ref这个元素的根
+                    this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+                    this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+                    this.themeTopYs.push(this.$refs.list.$el.offsetTop);
+                    this.themeTopYs.push(Number.MAX_VALUE)
+                },100)
             }),
              //请求推荐数据
             getRecommend().then(res => {
             this.recommends = res.data.data.list
-        }
-        )
+        })
         },
-       
         methods:{
             imageLoad() {
                 this.$refs.scroll.refresh()
+                this.getthemeTopYs()
+            },
+            itemclick(index) {
+                this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 1000)
+                
+            },
+            cscroll(position) {
+                const positionY = -(position.y)
+                let length = this.themeTopYs.length
+                
+                for(let i = 0; i < length - 1; i++){
+                    if (this.currentIndex != i && (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]))
+                    {
+                        this.currentIndex = i;
+                        this.$refs.nav.currentindex = this.currentIndex
+                    }
+                }
             }
         },
     }

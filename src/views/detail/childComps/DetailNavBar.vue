@@ -33,7 +33,8 @@ export default {
     },
     methods: {
         itemclick(index) {
-            this.currentindex = index
+            this.currentindex = index;
+            this.$emit('itemclick', index)
         },
         backhome() {
             this.$router.back()

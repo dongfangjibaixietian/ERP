@@ -14,8 +14,14 @@
 </template>
 
 <script>
+    import swiperItem from './SwiperItem.vue'
+
+
 	export default {
-		name: "Swiper",
+    name: "Swiper",
+    components: {
+      swiperItem
+    },
     props: {
       interval: {
 		    type: Number,
