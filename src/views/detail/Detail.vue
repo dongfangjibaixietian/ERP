@@ -11,6 +11,8 @@
     <detail-comment-info ref="comment" :comment-info="commentInfo"></detail-comment-info>
     <goods-list ref="list" :goods="recommends"></goods-list>
     </scroll>
+    <back-top @click.native="backClick" v-show="isshowback"></back-top>
+    <detail-bottom-bar></detail-bottom-bar>
 
     </div>
 </template>
@@ -25,6 +27,8 @@
     import DetailGoodsInfo from './childComps/DetailGoodsInfo.vue'
     import DetailParamInfo from './childComps/DetailParamInfo.vue'
     import DetailCommentInfo from './childComps/DetailCommentInfo.vue'
+    import DetailBottomBar from './childComps/DetailBottomBar.vue'
+    
 
     import Scroll from '../../components/scroll/Scroll.vue'
     import GoodsList from '../../components/goods/GoodsList.vue'
@@ -32,6 +36,7 @@
 
     import {getDetail, Goods, Shop, GoodsParam, getRecommend} from '../../network/detail'
     import {debounce} from '../../components/utils'
+    import {backTopMixin} from '../../components/mixin'
     //所有以类构造数据的方式都需要引入，引入的只是方法对象结构函数，引入函数不需要在components中注册。上面再引入数据的具体展示包
     
     
@@ -46,9 +51,11 @@
             DetailGoodsInfo,
             DetailParamInfo,
             DetailCommentInfo,
-            GoodsList
+            GoodsList,
+            DetailBottomBar
             
         },
+        mixins: [backTopMixin],
         data() {
             return {
                 iid: null,
@@ -61,7 +68,8 @@
                 recommends: [],
                 themeTopYs: [],
                 getthemeTopYs: null,
-                currentIndex: 0
+                currentIndex: 0,
+                isshowback: false
     
             }
         },
@@ -122,8 +130,11 @@
                         this.currentIndex = i;
                         this.$refs.nav.currentindex = this.currentIndex
                     }
+                    this.isshowback = (-position.y) > 1000
                 }
-            }
+            },
+            
+           
         },
     }
 </script>
@@ -139,7 +150,7 @@
 }
 
 .con {
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 66px);
 }
 
 .detail-nav {
@@ -147,5 +158,4 @@
     z-index: 9;
     background-color: pink;
 }
-
 </style>
