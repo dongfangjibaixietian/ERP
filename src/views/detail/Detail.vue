@@ -12,7 +12,7 @@
     <goods-list ref="list" :goods="recommends"></goods-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isshowback"></back-top>
-    <detail-bottom-bar></detail-bottom-bar>
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
 
     </div>
 </template>
@@ -112,6 +112,19 @@
         })
         },
         methods:{
+            addToCart() {
+                    const product = {}
+                    product.image = this.topImages[0]
+                    product.title = this.goods.title
+                    product.desc = this.goods.desc
+                    product.price = this.goods.newPrice
+                    product.iid = this.iid
+
+                    this.$store.dispatch('addCart',product)
+
+                    
+                    
+                },
             imageLoad() {
                 this.$refs.scroll.refresh()
                 this.getthemeTopYs()
@@ -124,7 +137,8 @@
                 const positionY = -(position.y)
                 let length = this.themeTopYs.length
                 
-                for(let i = 0; i < length - 1; i++){
+                for(let i = 0; i < length - 1; i++)
+                {
                     if (this.currentIndex != i && (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]))
                     {
                         this.currentIndex = i;
@@ -132,11 +146,9 @@
                     }
                     this.isshowback = (-position.y) > 1000
                 }
-            },
-            
-           
         },
-    }
+    },
+}
 </script>
 
 
